@@ -105,7 +105,7 @@ class TmsHelper { //NOSONAR
         return null;
     }
 
-    private function getOperationMark($session = null) {
+    private static function getOperationMark($session = null) {
         if (is_null($session)) {
             $tmsSession = self::getSession();
         } else {
