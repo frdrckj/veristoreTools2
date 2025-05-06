@@ -44,7 +44,7 @@ class TmsHelper { //NOSONAR
             $tmsLogin->save();
         }
     }
-    
+
     private function renewToken($token, $response, $curl, $isPost = true) {
         if ($response) {
             $chkResponse = json_decode($response, true);
@@ -71,7 +71,7 @@ class TmsHelper { //NOSONAR
         }
         return $response;
     }
-    
+
     private function getIdFromSN($sn) {
         $tmsSession = self::getSession();
         if (!is_null($tmsSession)) {
@@ -104,7 +104,7 @@ class TmsHelper { //NOSONAR
         }
         return null;
     }
-    
+
     private function getOperationMark($session = null) {
         if (is_null($session)) {
             $tmsSession = self::getSession();
@@ -240,7 +240,7 @@ class TmsHelper { //NOSONAR
         }
         return null;
     }
-    
+
     public function checkTokenUser() {
         $retVal = [];
         $user = User::find()->where(['IS NOT', 'tms_session', new Expression('NULL')])->all();
@@ -295,7 +295,7 @@ class TmsHelper { //NOSONAR
                     $retVal['appTotalNum'] = $response['data']['appCount'];
                     $retVal['appDownloadsNum'] = $response['data']['appDownloadCount'];
                     $retVal['downloadsTask'] = $response['data']['pushCount'];
-                    
+
                     $curl = new Curl();
                     $response = $curl->setHeaders([
                                 'Accept' => self::HEADER_ACCEPT,
@@ -335,7 +335,7 @@ class TmsHelper { //NOSONAR
         }
         return null;
     }
-    
+
     public function getTerminalListToFile() {
         $process = false;
         $terminalFile = Yii::$app->basePath . '/assets/Terminals.txt';
@@ -414,7 +414,7 @@ class TmsHelper { //NOSONAR
                         }
                     }
                     $retVal = $response['data'];
-                    
+
                     $curl = new Curl();
                     $response = $curl->setHeaders([
                                 'Accept' => self::HEADER_ACCEPT,
@@ -561,7 +561,7 @@ class TmsHelper { //NOSONAR
                 $response = json_decode($response, true);
                 if (intval($response['code']) == 200) {
                     $data = $response['data'];
-                    
+
                     $data['sn'] = $deviceId;
                     $data['model'] = $model;
                     $data['merchantId'] = $merchantId;
@@ -582,7 +582,7 @@ class TmsHelper { //NOSONAR
                     if ($response) {
                         $response = json_decode($response, true);
                         if (intval($response['code']) == 200) {
-                            $retVal['resultCode'] = '0'; 
+                            $retVal['resultCode'] = '0';
                         } else {
                             $retVal['resultCode'] = $response['code'];
                             $retVal['desc'] = $response['desc'];
@@ -674,7 +674,7 @@ class TmsHelper { //NOSONAR
                         ]
                     ];
                     break;
-                case 5: 
+                case 5:
                     $searchField = [
                         'param' => [
                             'name' => 'TP-MERCHANT-MERCHANT_ID-1',
@@ -958,7 +958,7 @@ class TmsHelper { //NOSONAR
                 $response = json_decode($response, true);
                 if (intval($response['code']) == 200) {
                     $totalApp = $response['data']['list'];
-                    
+
                     $retVal['allApps'] = [];
                     $curl = new Curl();
                     $curl->setHeaders([
@@ -1066,7 +1066,7 @@ class TmsHelper { //NOSONAR
         if (!is_null($tmsSession)) {
             $serialNumId = self::getIdFromSN($sn);
             $operationMark = self::getOperationMark($tmsSession);
-            $retVal = [];                    
+            $retVal = [];
             $curl = new Curl();
             $response = $curl->setHeaders([
                         'Accept' => self::HEADER_ACCEPT,
@@ -1145,7 +1145,7 @@ class TmsHelper { //NOSONAR
 
             $serialNumId = self::getIdFromSN($sn);
             $operationMark = self::getOperationMark($tmsSession);
-            $retVal = [];                    
+            $retVal = [];
             $process = true;
             $curl = new Curl();
             $curl->setHeaders([
@@ -1162,7 +1162,7 @@ class TmsHelper { //NOSONAR
                     'tabName' => $key,
                     'terminalId' => $serialNumId,
                 ]))->post(Yii::$app->params['appTmsUrl'] . '/market/manage/terminalAppParameter/view');
-                
+
                 $response = self::renewToken($tmsSession, $response, $curl);
                 if ($response) {
                     $response = json_decode($response, true);
@@ -1255,7 +1255,7 @@ class TmsHelper { //NOSONAR
                 $response = json_decode($response, true);
                 if (intval($response['code']) == 200) {
                     $appList = $response['data'];
-                    
+
                     $retVal['appList'] = [];
                     $curl = new Curl();
                     $curl->setHeaders([
@@ -1656,7 +1656,7 @@ class TmsHelper { //NOSONAR
         }
         return null;
     }
-    
+
     public function getMerchantManageDetail($merchantId, $session = null, $rcCheck = true) {
         if (is_null($session)) {
             $tmsSession = self::getSession();
@@ -1703,7 +1703,7 @@ class TmsHelper { //NOSONAR
         }
         return null;
     }
-    
+
     public function getGroupManageList($session, $pageNum) {
         if ($session) {
             $curl = new Curl();
@@ -1829,7 +1829,7 @@ class TmsHelper { //NOSONAR
                 $response = json_decode($response, true);
                 if (intval($response['code']) == 200) {
                     $operationMark = $response['data']['operationMark'];
-                    
+
                     $retVal['data'] = [];
                     $curl = new Curl();
                     $curl->setHeaders([
@@ -2004,7 +2004,7 @@ class TmsHelper { //NOSONAR
         }
         return null;
     }
-    
+
     public function editGroupManage($session, $groupId, $groupName, $terminalListNew, $terminalListOld, $rcCheck = true) {
         if ($session) {
             $addTerminalList = array_diff($terminalListNew, $terminalListOld);
@@ -2028,7 +2028,7 @@ class TmsHelper { //NOSONAR
                     $response = json_decode($response, true);
                     if (intval($response['code']) == 200) {
                         $operationMark = $response['data']['operationMark'];
-                        
+
                         if (!empty($addTerminalList)) {
                             $curl = new Curl();
                             $response = $curl->setHeaders([
@@ -2037,7 +2037,7 @@ class TmsHelper { //NOSONAR
                                         'Authorization' => $session
                                     ])
                                     ->setRawPostData(json_encode([
-                                        'groupId' => strval($groupId), 
+                                        'groupId' => strval($groupId),
                                         'operationMark' => $operationMark,
                                         'operationType' => 1,
                                         'terminalIds' => array_values($addTerminalList)
@@ -2056,7 +2056,7 @@ class TmsHelper { //NOSONAR
                                         'Authorization' => $session
                                     ])
                                     ->setRawPostData(json_encode([
-                                        'groupId' => strval($groupId), 
+                                        'groupId' => strval($groupId),
                                         'operationMark' => $operationMark,
                                         'operationType' => 1,
                                         'terminalIds' => array_values($deleteTerminalList)
@@ -2103,5 +2103,5 @@ class TmsHelper { //NOSONAR
         }
         return null;
     }
-    
+
 }

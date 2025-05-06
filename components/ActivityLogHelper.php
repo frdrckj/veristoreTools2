@@ -87,7 +87,7 @@ class ActivityLogHelper {
         }
     }
 
-    public function getAction($privileges = null) {
+    public static function getAction($privileges = null) {
         $action = [];
         $actAction = self::getActAction($privileges);
         foreach ($actAction as $tmp) {
@@ -96,7 +96,7 @@ class ActivityLogHelper {
         return $action;
     }
 
-    public function add($action, $detail = null, $userFullName = null) {
+    public static function add($action, $detail = null, $userFullName = null) {
         $actAction = self::getActAction();
         if (array_key_exists($action, $actAction)) {
             $tmp = $actAction[$action];
