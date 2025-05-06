@@ -52,7 +52,7 @@ class VeristoreController extends Controller {
         return Yii::$app->basePath . '/web/parameter/';
     }
 
-    public static function login($redirect) { //NOSONAR
+    public function login($redirect) { //NOSONAR
         $model = new TmsLogin();
 
         if ((Yii::$app->request->isPost) && ($model->load(Yii::$app->request->post()))) {
