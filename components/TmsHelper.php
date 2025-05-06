@@ -218,7 +218,7 @@ class TmsHelper { //NOSONAR
         return null;
     }
 
-    public function checkToken() {
+    public static function checkToken() {
         $tmsSession = self::getSession();
         if (!is_null($tmsSession)) {
             $curl = new Curl();
