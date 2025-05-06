@@ -29,7 +29,7 @@ class TmsHelper { //NOSONAR
         return $output;
     }
 
-    private function getSession() {
+    private static function getSession() {
         $tmsLogin = TmsLogin::find()->where(['tms_login_enable' => '1'])->one();
         if ($tmsLogin instanceof TmsLogin) {
             return $tmsLogin->tms_login_session;
