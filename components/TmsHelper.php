@@ -609,7 +609,7 @@ class TmsHelper { //NOSONAR
         return null;
     }
 
-    public function getTerminalList($session, $pageNum) {
+    public static function getTerminalList($session, $pageNum) {
         if (is_null($session)) {
             $tmsSession = self::getSession();
         } else {
