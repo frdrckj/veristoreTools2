@@ -1240,7 +1240,7 @@ class TmsHelper { //NOSONAR
         return null;
     }
 
-    public static function getAppListSearch($session, $serialNum) {
+    public function getAppListSearch($session, $serialNum) {
         if ($session) {
             $retVal = [];
             $curl = new Curl();
