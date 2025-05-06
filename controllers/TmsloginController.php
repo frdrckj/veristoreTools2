@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace app\controllers;
 
 use app\components\ActivityLogHelper;
@@ -15,33 +9,27 @@ use app\models\TmsLogin as TmsLoginModel;
 use Yii;
 use yii\web\Controller;
 
-/**
- * Description of TmsLoginController
- *
- * @author LENOVO
- */
 class TmsloginController extends Controller {
 
     public function actionIndex() { //NOSONAR
         $model = new TmsLogin();
+        $tmsHelper = new TmsHelper();
 
         if (Yii::$app->request->isPost) {
             if ($model->load(Yii::$app->request->post())) {
-                $response = TmsHelper::login($model->username, $model->password, $model->token, $model->codeVerify, $model->operator);
+                $response = $tmsHelper->login($model->username, $model->password, $model->token, $model->codeVerify, $model->operator);
                 if (!is_null($response)) {
                     if (intval($response['resultCode']) == 0) {
                         TmsLoginModel::updateAll(['tms_login_enable' => '0'], 'tms_login_enable = 1');
                         $tmsLogin = TmsLoginModel::find()->orderBy(['tms_login_id' => SORT_DESC])->one();
-                        if ($tmsLogin instanceof TmsLoginModel) {
-                            $scheduled = $tmsLogin->tms_login_scheduled;
-                        } else {
-                            $scheduled = null;
-                        }
+                        $scheduled = $tmsLogin instanceof TmsLoginModel ? $tmsLogin->tms_login_scheduled : null;
+
                         $tmsLogin = new TmsLoginModel();
                         $tmsLogin->tms_login_user = $response['username'];
                         $tmsLogin->tms_login_session = $response['cookies'];
                         $tmsLogin->tms_login_scheduled = $scheduled;
                         $tmsLogin->save();
+
                         ActivityLogHelper::add(ActivityLogHelper::TMS_LOGIN_ACTIVITY, 'System Login TMS Veristore sebagai ' . $model->username);
                         Yii::$app->session->setFlash('info', 'Login TMS menggunakan ' . $model->username . ' berhasil!');
                         $model = new TmsLogin();
@@ -51,7 +39,7 @@ class TmsloginController extends Controller {
                         $model->codeVerify = '';
                         Yii::$app->session->setFlash('info', $response['desc']);
                         $model->operatorData = [];
-                        $response = TmsHelper::getResellerList($model->username);
+                        $response = $tmsHelper->getResellerList($model->username);
                         if (!is_null($response)) {
                             foreach ($response['data'] as $tmp) {
                                 $model->operatorData[$tmp['id']] = $tmp['resellerName'];
@@ -63,7 +51,7 @@ class TmsloginController extends Controller {
                     $model->codeVerify = '';
                     Yii::$app->session->setFlash('info', 'Login TMS gagal dilakukan!');
                     $model->operatorData = [];
-                    $response = TmsHelper::getResellerList($model->username);
+                    $response = $tmsHelper->getResellerList($model->username);
                     if (!is_null($response)) {
                         foreach ($response['data'] as $tmp) {
                             $model->operatorData[$tmp['id']] = $tmp['resellerName'];
@@ -79,19 +67,21 @@ class TmsloginController extends Controller {
             }
         }
 
-        $response = TmsHelper::getVerifyCode();
+        $response = $tmsHelper->getVerifyCode();
         if (!is_null($response)) {
             $model->token = $response['token'];
             $model->codeVerifyImage = $response['image'];
         }
+
         return $this->render('index', [
-                    'model' => $model,
+            'model' => $model,
         ]);
     }
 
     public function actionGetoperator($username) {
         $select = '"<option value="">--Pilih Operator --</option>"';
-        $response = TmsHelper::getResellerList($username);
+        $tmsHelper = new TmsHelper();
+        $response = $tmsHelper->getResellerList($username);
         if (!is_null($response)) {
             foreach ($response['data'] as $tmp) {
                 $select .= ("<option value='" . $tmp['id'] . "'>" . $tmp['resellerName'] . "</option>");
@@ -101,7 +91,8 @@ class TmsloginController extends Controller {
     }
 
     public function actionGetverifycode() {
-        $response = TmsHelper::getVerifyCode();
+        $tmsHelper = new TmsHelper();
+        $response = $tmsHelper->getVerifyCode();
         echo $response['token'] . '|-|' . $response['image'];
     }
 
