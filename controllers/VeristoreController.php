@@ -52,7 +52,7 @@ class VeristoreController extends Controller {
         return Yii::$app->basePath . '/web/parameter/';
     }
 
-    public function login($redirect) { //NOSONAR
+    public static function login($redirect) { //NOSONAR
         $model = new TmsLogin();
 
         if ((Yii::$app->request->isPost) && ($model->load(Yii::$app->request->post()))) {
@@ -136,10 +136,10 @@ class VeristoreController extends Controller {
             if (is_null(Yii::$app->user->identity->tms_session)) {
                 return $this->login('terminal');
             }
-    
+
             $model = new Terminal();
             $model->load(Yii::$app->request->get());
-    
+
             if (isset(Yii::$app->request->get()['page'])) {
                 $isPage = true;
                 $page = intval(Yii::$app->request->get()['page']);
@@ -150,7 +150,7 @@ class VeristoreController extends Controller {
                 $isPage = false;
                 $page = 1;
             }
-            
+
             if (isset(Yii::$app->request->get()['per-page'])) {
                 $perPage = intval(Yii::$app->request->get()['per-page']);
             } else if (isset(Yii::$app->request->post()['perPage'])) {
@@ -158,7 +158,7 @@ class VeristoreController extends Controller {
             } else {
                 $perPage = null;
             }
-            
+
             if ($model->serialNo) {
                 $isSearch = true;
                 $response = TmsHelper::getTerminalListSearch(Yii::$app->user->identity->tms_session, $page, $model->serialNo, $model->searchType);
@@ -194,7 +194,7 @@ class VeristoreController extends Controller {
                 $dataProvider = new ArrayDataProvider(['allModels' => []]);
                 $pagination = new Pagination();
             }
-    
+
             $response = TmsHelper::getMerchantList(Yii::$app->user->identity->tms_session);
             if (!is_null($response)) {
                 $merchantList = [];
@@ -211,13 +211,13 @@ class VeristoreController extends Controller {
                     }
                 }
             }
-    
+
             if (($isSearch) || ($isPage)) {
     $page = Yii::$app->request->get('page', 1); // Ambil page dari request (default ke 1)
-    
+
     // Ambil data cuma dari 1 halaman (biar ringan & cepat)
     $response = TmsHelper::getTerminalListSearch(Yii::$app->user->identity->tms_session, $page, $model->serialNo, $model->searchType);
-    
+
     if (!is_null($response)) {
         $searchTotalAllList = intval($response['totalRecord'] ?? 0); // Jumlah semua hasil
         $tmpList = '';
@@ -233,11 +233,11 @@ class VeristoreController extends Controller {
 
     // Encode list SN per halaman
     $searchSelectAllList = json_encode($searchSelectAllList);
-    
+
     // Ambil ulang dari post kalau sudah ada
     $totalAllList = Yii::$app->request->post('totalAllList', $searchTotalAllList);
     $selectAllList = Yii::$app->request->post('selectAllList', $searchSelectAllList);
-    
+
 } else {
     // Fallback ambil dari post/get atau file jika bukan mode search/page
     if (isset(Yii::$app->request->post()['selectAllList'])) {
@@ -394,7 +394,7 @@ class VeristoreController extends Controller {
 
         if ((Yii::$app->request->isPost) && ($model->load(Yii::$app->request->post()))) {
             $response = TmsHelper::addTerminal(Yii::$app->user->identity->tms_session, $model->deviceId, $model->vendor, $model->model, $model->merchant, $model->group, $model->serialNo, $model->relocationAlert, false);
-            
+
             if (!is_null($response)) {
                 if (intval($response['resultCode']) == 0) {
                     $response = TmsHelper::addParameter(Yii::$app->user->identity->tms_session, $model->deviceId, $model->app);
@@ -612,7 +612,7 @@ class VeristoreController extends Controller {
                         'TMS SUPERVISOR' => 1,
                         'TMS OPERATOR' => 2
                     ];
-                    
+
                     $paramFieldName = explode('-', urldecode($model->paraName));
                     if (count($paramFieldName) > 3) {
                         $tmp = $paramFieldName;
@@ -731,7 +731,7 @@ class VeristoreController extends Controller {
                 ActivityLogHelper::add(ActivityLogHelper::VERISTORE_CREATE_REPORT);
                 Yii::$app->session->setFlash('reportSubmitted', true);
                 Yii::$app->cache->set('report_submitted_by_user_' . Yii::$app->user->id, true, 300); // aktif 5 menit
-                
+
                 return $this->redirect('terminal');
             }
         } else {
@@ -818,7 +818,7 @@ class VeristoreController extends Controller {
                                 ->bindValue(':fileName', $fileName)
                                 ->query();
                         fclose($fp);
-                       
+
                         $insertResult = $result->read()['result'];
                         $result->close();
                         if ($insertResult == '1') {
@@ -878,9 +878,9 @@ class VeristoreController extends Controller {
             'Template' => 'string'
         ];
         $response = TmsHelper::getTerminalListSearch(Yii::$app->user->identity->tms_session, 1, 'xTMP', '4');
-        
+
         if (!is_null($response)) {
-            
+
             $dataTemplate = [];
             foreach ($response['terminalList'] as $tmp) {
                 $dataTemplate[] = [$tmp['deviceId'], $tmp['deviceId']];
@@ -908,7 +908,7 @@ class VeristoreController extends Controller {
                 $dataMerchant[] = [$merchant['id'], $merchant['name']];
             }
         }
-        
+
         $headerGroup = [
             'Id' => 'string',
             'Group' => 'string'
@@ -920,7 +920,7 @@ class VeristoreController extends Controller {
                 $dataGroup[] = [$group['id'], $group['name']];
             }
         }
-        
+
         $headerCsi = [
             'No' => 'integer',
             'Template' => 'string',
@@ -1110,16 +1110,16 @@ class VeristoreController extends Controller {
                 'font-style' => 'bold'
             ]
         ];
-        
+
         $importFile = Yii::$app->basePath . '/assets/import_format_csi.xlsx';
         if (file_exists($importFile)) {
             unlink($importFile);
         }
-        
+
         $writer = new XLSXWriter();
         $writer->writeSheetHeader('CSI', $headerCsi, $headerCsiStyle);
         $writer->writeSheetRow('CSI', [1,]);
-        
+
         $writer->writeSheetHeader('Template', $headerTemplate, $headerStyle);
         foreach ($dataTemplate as $row) {
             $writer->writeSheetRow('Template', $row);
@@ -1129,12 +1129,12 @@ class VeristoreController extends Controller {
         foreach ($dataMerchant as $row) {
             $writer->writeSheetRow('Profil Merchant', $row);
         }
-        
+
         $writer->writeSheetHeader('Group Merchant', $headerGroup, $headerStyle);
         foreach ($dataGroup as $row) {
             $writer->writeSheetRow('Group Merchant', $row);
         }
-        
+
         $writer->writeToFile($importFile);
         unset($writer);
         Yii::$app->response->sendFile($importFile, 'import_format_csi.xlsx');
@@ -1504,7 +1504,7 @@ class VeristoreController extends Controller {
             Yii::$app->session->setFlash('info', 'Edit Merchant failed!');
         }
     }
-    
+
     public function actionGetstate($countryId) {
         $select = '"<option value="">-- State --</option>"';
         $response = TmsHelper::getStateList(Yii::$app->user->identity->tms_session, $countryId);
@@ -1598,7 +1598,7 @@ class VeristoreController extends Controller {
         if (is_null($title)) {
             $title = Yii::$app->request->post('title');
         }
-        
+
         if (Yii::$app->request->isPost) {
             if (Yii::$app->request->post('flagGroupDelete') === '') {
                 $updateTable = true;
@@ -1635,7 +1635,7 @@ class VeristoreController extends Controller {
                 }
             }
         }
-        
+
         if (!is_null($terminal)) {
             $dataProvider = new ArrayDataProvider([
                 'allModels' => $terminal,
@@ -1658,7 +1658,7 @@ class VeristoreController extends Controller {
             ]);
         }
     }
-    
+
     public function actionEditgroup($title, $groupId, $groupName) { //NOSONAR
         $response = TmsHelper::getGroupManageTerminal(Yii::$app->user->identity->tms_session, $groupId, false);
         if (!is_null($response)) {
@@ -1675,7 +1675,7 @@ class VeristoreController extends Controller {
             Yii::$app->session->setFlash('info', 'Edit group failed!');
         }
     }
-    
+
     public function actionAddgroupterminal($title = null) {
         if (Yii::$app->request->isPost) {
             $model = new Group();
@@ -1722,7 +1722,7 @@ class VeristoreController extends Controller {
                 }
                 return $this->actionAddgroup($title, ['id' => $model->id, 'groupName' => $model->groupName], $terminalList, $terminalDataOrg);
             }
-            
+
             if (isset($updateTable)) {
                 return json_encode([
                     'allModels' => str_replace("\"", "|||", json_encode($dataProvider->allModels)),
@@ -1751,7 +1751,7 @@ class VeristoreController extends Controller {
             $downloadReset = false;
             $serialNoList = null;
             $exportName = null;
-            
+
             $export = Export::find()->select(['exp_filename'])->where(['IS', 'exp_data', new Expression('NULL')])->andWhere(['<>', 'exp_current', new Expression('exp_total')])->orderBy(['exp_id' => SORT_DESC]);
             if ($export->count() > 0) {
                 $export = $export->one();
@@ -1823,7 +1823,7 @@ exit();
                             $datetime = explode('_', $exportName);
                             $exportModel = Export::find()->where(['exp_filename' => $exportName])->one();
                             if ($exportModel && $exportModel->exp_current == $exportModel->exp_total && file_exists("./export/{$exportName}")) {
-                                
+
                                 $downloadResult = true;
                                 Yii::$app->session->setFlash('info', 'Last export on ' . substr($datetime[1], 0, 4) . '-' . substr($datetime[1], 4, 2) . '-' . substr($datetime[1], 6) . ' ' . substr($datetime[2], 0, 2) . ':' . substr($datetime[2], 2, 2));
                             } else {
@@ -1873,7 +1873,7 @@ exit();
                         'downloadForce' => $exportName
             ]);
     }
-    
+
     public function actionExportresult() {
         $export = Export::find()->select(['exp_id', 'exp_filename'])->orderBy(['exp_id' => SORT_DESC])->one();
         if ($export instanceof Export) {
@@ -1900,7 +1900,7 @@ exit();
             }
         }
     }
-    
+
     public function actionChangemerchant() {
         if (Yii::$app->request->isPost) {
             $success = false;
@@ -1919,7 +1919,7 @@ exit();
             return $this->redirect(['veristore/terminal']);
         }
     }
-    
+
     public function actionImportmerchant() { //NOSONAR
         $model = new Merchant();
 
@@ -1992,7 +1992,7 @@ exit();
                     'model' => $model,
         ]);
     }
-    
+
     public function actionImportformatmerchant() { //NOSONAR
         $headerLocation = [
             'Id State' => 'string',
@@ -2129,7 +2129,7 @@ exit();
         $writer = new XLSXWriter();
         $writer->writeSheetHeader('Merchant', $headerMerchant, $headerMerchantStyle);
         $writer->writeSheetRow('Merchant', [1,]);
-        
+
         $writer->writeSheetHeader('Location', $headerLocation, $headerLocationStyle);
         foreach ($dataLocation as $row) {
             $writer->writeSheetRow('Location', $row);
@@ -2148,7 +2148,7 @@ exit();
         unset($writer);
         Yii::$app->response->sendFile($importFile, 'import_format_merchant.xlsx');
     }
-    
+
     public function actionImportresultmerchant() {
         $importData = Import::find()->select(['imp_filename'])->where(['imp_code_id' => 'MCH'])->orderBy(['imp_id' => SORT_DESC])->one();
         if ($importData instanceof Import) {
@@ -2168,17 +2168,17 @@ exit();
             return Yii::$app->response->sendFile($filePath . $fileName);
         }
     }
-    
+
     public function actionReset() { //NOSONAR
         Import::updateAll(['imp_cur_row' => new Expression('`imp_total_row`')], 'imp_code_id = \'CSI\' AND imp_cur_row != imp_total_row');
         return $this->redirect(['import']);
     }
-    
+
     public function actionResetmerchant() { //NOSONAR
         Import::updateAll(['imp_cur_row' => new Expression('`imp_total_row`')], 'imp_code_id = \'MCH\' AND imp_cur_row != imp_total_row');
         return $this->redirect(['importmerchant']);
     }
-    
+
     public function actionExportreset() { //NOSONAR
         Export::deleteAll('exp_data IS NULL');
         return $this->redirect(['export']);
