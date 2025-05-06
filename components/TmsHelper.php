@@ -45,7 +45,7 @@ class TmsHelper { //NOSONAR
         }
     }
 
-    private function renewToken($token, $response, $curl, $isPost = true) {
+    private static function renewToken($token, $response, $curl, $isPost = true) {
         if ($response) {
             $chkResponse = json_decode($response, true);
             if (($chkResponse['code'] == '200') && ($chkResponse['desc'] == 'toke更新')) {
