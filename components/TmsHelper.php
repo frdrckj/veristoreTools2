@@ -132,7 +132,7 @@ class TmsHelper { //NOSONAR
         }
     }
 
-    public function getResellerList($username) {
+    public static function getResellerList($username) {
         $curl = new Curl();
         $response = $curl->setHeaders([
                     'Accept' => self::HEADER_ACCEPT,
