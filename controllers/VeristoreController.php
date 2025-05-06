@@ -56,8 +56,13 @@ class VeristoreController extends Controller {
         $model = new TmsLogin();
 
         if ((Yii::$app->request->isPost) && ($model->load(Yii::$app->request->post()))) {
+            // Decrypt the password
             $model->password = TmsHelper::encrypt_decrypt(Yii::$app->user->identity->tms_password, false);
-            $response = TmsHelper::login($model->username, $model->password, $model->token, $model->codeVerify, $model->operator);
+
+            // Instantiate TmsHelper and call login method
+            $tmsHelper = new TmsHelper(); // Instantiate the helper
+            $response = $tmsHelper->login($model->username, $model->password, $model->token, $model->codeVerify, $model->operator); // Use the instance method
+
             if (!is_null($response)) {
                 if (intval($response['resultCode']) == 0) {
                     $tmeLogonFlag = true;
@@ -95,14 +100,19 @@ class VeristoreController extends Controller {
             }
         }
 
+        // Pre-fill the model
         $model->redirect = $redirect;
         $model->username = Yii::$app->user->identity->user_name;
         $model->password = str_pad('', strlen(TmsHelper::encrypt_decrypt(Yii::$app->user->identity->tms_password, false)), '*');
+
+        // Get verification code
         $response = TmsHelper::getVerifyCode();
         if (!is_null($response)) {
             $model->token = $response['token'];
             $model->codeVerifyImage = $response['image'];
         }
+
+        // Get reseller list
         $model->operatorData = [];
         $response = TmsHelper::getResellerList($model->username);
         if (!is_null($response)) {
@@ -110,8 +120,10 @@ class VeristoreController extends Controller {
                 $model->operatorData[$tmp['id']] = $tmp['resellerName'];
             }
         }
+
+        // Render login view
         return $this->render('login', [
-                    'model' => $model,
+            'model' => $model,
         ]);
     }
 
