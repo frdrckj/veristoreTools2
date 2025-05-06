@@ -35,7 +35,7 @@ class ActivityLogHelper {
     const VERISTORE_IMPORT_MERCHANT = 27;
     const VERISTORE_REPLACEMENT_TERMINAL = 28;
 
-    private function getActAction($privileges = null) {
+    private static function getActAction($privileges = null) {
         $actAdmin = [
             self::LOGIN_ACTIVITY => 'LOGIN',
             self::LOGOUT_ACTIVITY => 'LOGOUT',
