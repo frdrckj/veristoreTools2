@@ -471,7 +471,7 @@ class TmsHelper { //NOSONAR
         return null;
     }
 
-    public function getTerminalParameter($serialNum, $appId, $session = null, $rcCheck = true) {
+    public static function getTerminalParameter($serialNum, $appId, $session = null, $rcCheck = true) {
         if (is_null($session)) {
             $tmsSession = self::getSession();
         } else {
