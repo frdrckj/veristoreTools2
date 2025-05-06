@@ -807,7 +807,7 @@ class TmsHelper { //NOSONAR
         return null;
     }
 
-    public function getMerchantList($session) {
+    public static function getMerchantList($session) {
         if (is_null($session)) {
             $tmsSession = self::getSession();
         } else {
