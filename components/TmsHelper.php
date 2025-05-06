@@ -72,7 +72,7 @@ class TmsHelper { //NOSONAR
         return $response;
     }
 
-    private function getIdFromSN($deviceId) {
+    private static function getIdFromSN($deviceId) {
         $tmsSession = self::getSession();
         if (!is_null($tmsSession)) {
             $curl = new Curl();
