@@ -374,7 +374,7 @@ class TmsHelper { //NOSONAR
         }
     }
 
-    public function getTerminalDetail($serialNum, $session = null, $rcCheck = true) {
+    public static function getTerminalDetail($serialNum, $session = null, $rcCheck = true) {
         if (is_null($session)) {
             $tmsSession = self::getSession();
         } else {
