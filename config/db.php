@@ -3,7 +3,7 @@
 return [
     'class' => 'yii\db\Connection',
     'dsn' => 'mysql:host=localhost;dbname=veristoretools2DB',
-    'username' => 'veristore_user',
+    'username' => 'root',
     'password' => 'P@ssw0rd',
     'charset' => 'utf8',
         // Schema cache options (for production environment)
