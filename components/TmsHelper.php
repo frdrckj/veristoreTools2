@@ -273,7 +273,7 @@ class TmsHelper { //NOSONAR
         return $retVal;
     }
 
-    public function getDashboard() {
+    public static function getDashboard() {
         $tmsSession = self::getSession();
         $checkToken = self::checkToken();
         if (!is_null($tmsSession)) {
