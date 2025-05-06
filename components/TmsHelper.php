@@ -14,7 +14,7 @@ class TmsHelper { //NOSONAR
     const HEADER_ACCEPT = 'application/json, text/plain, */*';
     const HEADER_CONTENT_TYPE = 'application/json;charset=UTF-8';
 
-    public function encrypt_decrypt($string, $encrypt = true) {
+    public static function encrypt_decrypt($string, $encrypt = true) {
         $encrypt_method = "AES-256-CBC";
         $secret_key = '35136HH7B63C27AA74CDCC2BBRT9'; // user define private key
         $secret_iv = 'J5g275fgf5H'; // user define secret key
