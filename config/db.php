@@ -2,7 +2,7 @@
 
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=veristoretools2',
+    'dsn' => 'mysql:host=localhost;dbname=veristoretools2DB',
     'username' => 'veristore_user',
     'password' => 'P@ssw0rd',
     'charset' => 'utf8',
