@@ -37,7 +37,7 @@ class TmsHelper { //NOSONAR
         return null;
     }
 
-    private function setSession() {
+    private static function setSession() {
         $tmsLogin = TmsLogin::find()->where(['tms_login_enable' => '1'])->one();
         if ($tmsLogin instanceof TmsLogin) {
             $tmsLogin->tms_login_enable = '0';

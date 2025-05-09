@@ -48,7 +48,7 @@ class QueueLog extends \yii\db\ActiveRecord
             'service_name' => 'Service Name',
         ];
     }
-    
+
     public function beforeSave($insert) {
 
         if (!parent::beforeSave($insert)) {
